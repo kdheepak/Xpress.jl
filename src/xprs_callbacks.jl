@@ -13,6 +13,7 @@ mutable struct MessageData
     msgtype::Cint
 end
 
+#=
 function setcbintsol_wrapper(ptr_model::Ptr{Nothing}, my_object::Ptr{Nothing})
     callback, model, data = unsafe_pointer_to_objref(my_object)
     callback(CallbackData(model, data, Model(ptr_model;finalize_env = false)))
@@ -74,3 +75,4 @@ function set_callback_message!(model::Model, callback::Function, data::Any)
     push!(model.callback,usrdata)
     return nothing
 end
+=#
