@@ -85,7 +85,7 @@ module Xpress
     # include("xprs_common.jl")
     # include("xprs_env.jl")
 
-    # include("xprs_model.jl")
+    include("xprs_model.jl")
     # include("xprs_params.jl")
     # include("xprs_attrs.jl")
 
@@ -96,11 +96,11 @@ module Xpress
     # include("xprs_highlevel.jl")
 
     # include("xprs_solve.jl")
-    # include("xprs_callbacks.jl")
+    include("xprs_callbacks.jl")
     # include("xprs_iis.jl")
 
     # include("XpressSolverInterface.jl")
-    # include("MOIWrapper.jl")
+    include("MOI_Wrapper.jl")
 
     # # license checker
     # include("xprs_userlic.jl")

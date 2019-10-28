@@ -46,10 +46,7 @@ end
 
 mutable struct Optimizer <: MOI.AbstractOptimizer
     # The low-level Xpress model.
-    inner::Model
-    # The Xpress environment. If `nothing`, a new environment will be created
-    # on `MOI.empty!`.
-    # env::Union{Nothing, Env}
+    inner::Xpress.Model
     # The current user-provided parameters for the model.
     params::Dict{String, Any}
 
@@ -108,7 +105,7 @@ mutable struct Optimizer <: MOI.AbstractOptimizer
     variable_dual_solution::Vector{}
     # constraint_primal_solution::Vector
 
-    conflict::Union{Nothing, IISData}
+    conflict::Any
     """
         Optimizer(env = nothing; kwargs...)
 
@@ -127,7 +124,6 @@ mutable struct Optimizer <: MOI.AbstractOptimizer
 
     function Optimizer(; kwargs...)
         model = new()
-        # model.env = env
         model.silent = false
         model.params = Dict{String, Any}()
         model.variable_info = CleverDicts.CleverDict{MOI.VariableIndex, VariableInfo}()
@@ -163,7 +159,7 @@ cintvec(v::Vector) = convert(Vector{Int32}, v)
 Base.show(io::IO, model::Optimizer) = show(io, model.inner)
 
 function MOI.empty!(model::Optimizer)
-    model.inner = XPR.Model()
+    model.inner = Xpress.Model()
     # if model.env === nothing
         # model.inner = Model(Env(), finalize_env = true)
     # else
@@ -1890,7 +1886,7 @@ end
 
 
 #### Pending Block Start ######
-#LQOI.get_unbounded_ray!(instance::Optimizer, place) = XPR.getprimalray!(instance.inner, place)
+#LQOI.get_unbounded_ray!(instance::Optimizer, place) = Xpress.getprimalray!(instance.inner, place)
 
 
 function MOI.get(model::Optimizer, ::MOI.VariablePrimal, x::MOI.VariableIndex)
@@ -2437,7 +2433,8 @@ You must have the option `LazyConstraints` set  via `Optimizer(LazyConstraint=1)
 This can only be called in a callback from `CB_MIPSOL`.
 """
 function cblazy!(
-    cb_data::CallbackData, model::Optimizer,
+    cb_data::CallbackData,
+    model::Optimizer,
     f::MOI.ScalarAffineFunction{Float64},
     s::Union{MOI.LessThan{Float64}, MOI.GreaterThan{Float64}, MOI.EqualTo{Float64}}
 )
