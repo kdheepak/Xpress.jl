@@ -1,4 +1,4 @@
-using Xpress, Test
+using Xpress
 using SparseArrays
 using LinearAlgebra
 using Test
