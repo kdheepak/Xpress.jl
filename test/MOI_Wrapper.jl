@@ -10,7 +10,7 @@ const OPTIMIZER = MOI.Bridges.full_bridge_optimizer(
     Xpress.Optimizer(), Float64)
 
 const CONFIG = MOIT.TestConfig()
-#=
+
 @testset "Unit Tests" begin
     MOIT.basic_constraint_tests(OPTIMIZER, CONFIG; exclude = [
         (MOI.VectorOfVariables, MOI.GeometricMeanCone)
@@ -26,7 +26,7 @@ const CONFIG = MOIT.TestConfig()
     MOIT.unittest(OPTIMIZER, MOIT.TestConfig(atol=1e-6))
     MOIT.modificationtest(OPTIMIZER, CONFIG)
 end
-
+#=
 @testset "Linear tests" begin
     @testset "Default Solver"  begin
         MOIT.contlineartest(OPTIMIZER, MOIT.TestConfig(basis = true), [
