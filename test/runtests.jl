@@ -1,4 +1,7 @@
-using Xpress, Test
+using Xpress
+using SparseArrays
+using LinearAlgebra
+using Test
 
 @testset "Xpress API" begin
 
@@ -11,10 +14,6 @@ using Xpress, Test
     @test Xpress.getprobname(xp) == ""
     @test Xpress.setprobname(xp, "xpress-optimization-problem") == nothing
     @test Xpress.getprobname(xp) == "xpress-optimization-problem"
-using SparseArrays
-using LinearAlgebra
-using Test
-
 #=
 tests = ["xprs_attrs_test",
          "lp_01a",
