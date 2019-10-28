@@ -15,23 +15,11 @@ mutable struct Model
     ptr_model::Ptr{Nothing}
     callback::Array{Any}
     finalize_env::Bool
-
     time::Float64
-
     function Model(p::Ptr{Nothing}; finalize_env::Bool=true)
         model = new(p, Any[], finalize_env, 0.0)
-        if VERSION >= v"0.7-"
-            if finalize_env
-                finalizer(model) do m
-                    free_model(m)
-                end
-            end
-        else
-            if finalize_env
-                finalizer(model, m -> free_model(m))
-            end
-        end
-        model
+        finalize_env && free_model(model)
+        return model
     end
 end
 
@@ -43,7 +31,7 @@ Xpress model constructor (autimatically sets OUTPUTLOG = 1)
 function Model(; finalize_env::Bool=true)
 
     a = Array{Ptr{Nothing}}(undef, 1)
-    ret = @xprs_ccall(createprob, Cint, ( Ptr{Ptr{Nothing}},), a )
+    ret = Xpress.XPRScreateprob(a)
     if ret != 0
         error("It was not possible to create a model, try running Env() and then create the model again.")
     end
@@ -51,13 +39,13 @@ function Model(; finalize_env::Bool=true)
     m = Model(a[1]; finalize_env = finalize_env)
 
     # turn off default printing on unix
-    setparam!(m, XPRS_OUTPUTLOG, 0)
-    setparam!(m, XPRS_CALLBACKFROMMASTERTHREAD, 1) #cannot be changed in julia
-
-    load_empty(m)
+    #setparam!(m, XPRS_OUTPUTLOG, 0)
+    #setparam!(m, XPRS_CALLBACKFROMMASTERTHREAD, 1) #cannot be changed in julia
 
     return m
 end
+
+#=
 Model(env; finalize_env::Bool=true) = Model(finalize_env=true)
 
 function Model(name::String, sense::Symbol = :minimize)
@@ -67,6 +55,7 @@ function Model(name::String, sense::Symbol = :minimize)
     end
     model
 end
+
 
 #################################################
 #
@@ -109,7 +98,7 @@ end
 #################################################
 
 Base.unsafe_convert(ty::Type{Ptr{Nothing}}, model::Model) = model.ptr_model::Ptr{Nothing}
-
+=#
 """
     free_model(model::Model)
 
@@ -117,7 +106,7 @@ Free all memory allocated in C related to Model
 """
 function free_model(model::Model)
     if model.ptr_model != C_NULL
-        ret = @xprs_ccall(destroyprob, Cint, (Ptr{Nothing},), model.ptr_model)
+        ret = Xpress.XPRSdestroyprob(model.ptr_model)
         if ret != 0
             throw(XpressError(model))
         end
@@ -125,7 +114,7 @@ function free_model(model::Model)
     end
     return nothing
 end
-
+#=
 """
     copy(model_src::Model)
 
@@ -388,3 +377,4 @@ function setlogfile(model::Model, filename::String)
     end
     nothing
 end
+=#
