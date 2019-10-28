@@ -1,7 +1,9 @@
-using Xpress, Compat.Test
-using Compat.SparseArrays
-using Compat.LinearAlgebra
+using Xpress, Test
+using SparseArrays
+using LinearAlgebra
+using Test
 
+#=
 tests = ["xprs_attrs_test",
          "lp_01a",
          "lp_01b",
@@ -17,10 +19,11 @@ tests = ["xprs_attrs_test",
          "MOIWrapper",
         #  "wordhunt"
          ]
+=#
 
-if VERSION < v"0.7.0"
-    push!(tests, "jump")
-end
+tests = ["MOI_Wrapper",
+        #  "wordhunt"
+         ]
 
 for t in tests
     fp = "$(t).jl"
