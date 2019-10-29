@@ -113,4 +113,7 @@ module Xpress
     # include("XpressSolverInterface.jl")
     include("MOI_Wrapper.jl")
 
+    # # license checker
+    # include("xprs_userlic.jl")
+
 end
