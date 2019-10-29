@@ -31,7 +31,7 @@ Xpress model constructor (autimatically sets OUTPUTLOG = 1)
 function Model(; finalize_env::Bool=true)
 
     a = Array{Ptr{Nothing}}(undef, 1)
-    ret = Xpress.XPRScreateprob(a)
+    ret = Xpress.createprob(a)
     if ret != 0
         error("It was not possible to create a model, try running Env() and then create the model again.")
     end
